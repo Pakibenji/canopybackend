@@ -18,6 +18,11 @@ export interface PlantRepository {
 export interface DateProvider {
   getNow(): Date;
 }
+
+export class TitleTooLongError extends Error {}
+
+export class EmptyTitleError extends Error {}
+
 export class PostPlantUseCase {
   constructor(
     private readonly plantRepository: PlantRepository,
@@ -25,6 +30,12 @@ export class PostPlantUseCase {
   ) {}
 
   handle(postPlantCommand: PostPlantCommand) {
+    if (postPlantCommand.title.length > 30) {
+      throw new TitleTooLongError();
+    }
+    if (postPlantCommand.title.trim().length === 0) {
+      throw new EmptyTitleError();
+    }
     this.plantRepository.save({
       id: postPlantCommand.id,
       title: postPlantCommand.title,
