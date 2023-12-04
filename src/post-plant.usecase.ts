@@ -29,14 +29,14 @@ export class PostPlantUseCase {
     private readonly dateProvider: DateProvider
   ) {}
 
-  handle(postPlantCommand: PostPlantCommand) {
+  async handle(postPlantCommand: PostPlantCommand) {
     if (postPlantCommand.title.length > 30) {
       throw new TitleTooLongError();
     }
     if (postPlantCommand.title.trim().length === 0) {
       throw new EmptyTitleError();
     }
-    this.plantRepository.save({
+    await this.plantRepository.save({
       id: postPlantCommand.id,
       title: postPlantCommand.title,
       proprietary: postPlantCommand.proprietary,

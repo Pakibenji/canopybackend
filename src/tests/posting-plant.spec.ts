@@ -6,7 +6,7 @@ import {
   TitleTooLongError,
   EmptyTitleError,
 } from "../post-plant.usecase";
-import { InMemoryPlantRepository } from "../plant.inmemory.repository.ts";
+import { InMemoryPlantRepository } from "../plant.inmemory.repository";
 describe("Feature: Posting a plant", () => {
   let fixture: Fixture;
 
@@ -15,9 +15,9 @@ describe("Feature: Posting a plant", () => {
   });
 
   describe("Rule: A PlantTitle can contain a maximum of 30 characters", () => {
-    test("User can post a plant on her timeline", () => {
+    test("User can post a plant on her timeline", async () => {
       fixture.givenNowIs(new Date("2023-01-19T19:00:00.000Z"));
-      fixture.whenUserPostAPlant({
+      await fixture.whenUserPostAPlant({
         id: "plantId",
         title: "Pachira",
         proprietary: "Alice",
@@ -30,11 +30,11 @@ describe("Feature: Posting a plant", () => {
         publishedAt: new Date("2023-01-19T19:00:00.000Z"),
       });
     });
-    test("User cannot post a plant with a title longer than 30 characters", () => {
+    test("User cannot post a plant with a title longer than 30 characters", async () => {
       const titleWith31Characters = "A title with more than 30 characters";
       fixture.givenNowIs(new Date("2023-01-19T19:00:00.000Z"));
 
-      fixture.whenUserPostAPlant({
+      await fixture.whenUserPostAPlant({
         id: "plantId",
         title: titleWith31Characters,
         proprietary: "Alice",
@@ -43,18 +43,18 @@ describe("Feature: Posting a plant", () => {
     });
   });
   describe("Rule: A title cannot be blank", () => {
-    test("User cannot post plant with empry Title", () => {
+    test("User cannot post plant with empry Title", async () => {
       fixture.givenNowIs(new Date("2023-01-19T19:00:00.000Z"));
-      fixture.whenUserPostAPlant({
+      await fixture.whenUserPostAPlant({
         id: "plantId",
         title: "",
         proprietary: "Alice",
       });
       fixture.thenErrorShouldBe(EmptyTitleError);
     });
-    test("User cannot post a plant with an only whitespaces title", () => {
+    test("User cannot post a plant with an only whitespaces title", async () => {
       fixture.givenNowIs(new Date("2023-01-19T19:00:00.000Z"));
-      fixture.whenUserPostAPlant({
+      await fixture.whenUserPostAPlant({
         id: "plantId",
         title: "   ",
         proprietary: "Alice",
@@ -80,9 +80,9 @@ const createFixture = () => {
     givenNowIs(now: Date) {
       dateProvider.now = now;
     },
-    whenUserPostAPlant(postPlantCommand: PostPlantCommand) {
+    async whenUserPostAPlant(postPlantCommand: PostPlantCommand) {
       try {
-        postPlantUseCase.handle(postPlantCommand);
+        await postPlantUseCase.handle(postPlantCommand);
       } catch (error) {
         thrownError = error;
       }

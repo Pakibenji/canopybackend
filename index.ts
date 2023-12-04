@@ -5,7 +5,7 @@ import {
   PostPlantCommand,
   PostPlantUseCase,
 } from "./src/post-plant.usecase";
-import { InMemoryPlantRepository } from "./src/plant.inmemory.repository.ts";
+import { FileSystemPlantRepository } from "./src/plant.fs.repository";
 
 class RealDateProvider implements DateProvider {
   getNow(): Date {
@@ -13,7 +13,7 @@ class RealDateProvider implements DateProvider {
   }
 }
 
-const plantRepository = new InMemoryPlantRepository();
+const plantRepository = new FileSystemPlantRepository();
 const dateProvider = new RealDateProvider();
 const postPlantUseCase = new PostPlantUseCase(plantRepository, dateProvider);
 
@@ -26,16 +26,15 @@ program
     new Command("post")
       .argument("<user>", "the current user")
       .argument("<title>", "the title of the plant")
-      .action((user, title) => {
+      .action(async (user, title) => {
         const postPlantCommand: PostPlantCommand = {
           id: "plantId",
           proprietary: user,
           title: title,
         };
         try {
-          postPlantUseCase.handle(postPlantCommand);
+          await postPlantUseCase.handle(postPlantCommand);
           console.log("plante postée");
-          console.table([plantRepository.plant]);
           process.exit(0);
         } catch (error) {
           console.error("X", error);
