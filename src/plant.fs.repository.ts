@@ -1,6 +1,7 @@
 import * as path from "path";
 import * as fs from "fs";
-import { Plant, PlantRepository } from "./post-plant.usecase";
+import { Plant } from "./Plant";
+import { PlantRepository } from "./plant.repository";
 
 export class FileSystemPlantRepository implements PlantRepository {
   save(plant: Plant): Promise<void> {

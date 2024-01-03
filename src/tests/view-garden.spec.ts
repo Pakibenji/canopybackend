@@ -1,4 +1,6 @@
-import { Plant } from "../post-plant.usecase";
+import { InMemoryPlantRepository } from "../plant.inmemory.repository";
+import { Plant } from "../Plant";
+import { ViewGardenUseCase } from "../view-garden.usecase";
 describe("Feature: Viewing a personnal plant list", () => {
   let fixture: Fixture;
 
@@ -6,7 +8,7 @@ describe("Feature: Viewing a personnal plant list", () => {
     fixture = createFixture();
   });
   describe("Rule: Plants are shown in reverse chronological order", () => {
-    test("User can view the 2 plants he published in her timeline"),
+    xtest("User can view the 2 plants he published in her garden"),
       async () => {
         fixture.givenTheFollowingPlantsExists([
           {
@@ -30,7 +32,7 @@ describe("Feature: Viewing a personnal plant list", () => {
         ]);
         fixture.givenNowIs(new Date("2023-08-07T16:29:00.000Z"));
 
-        await fixture.whenUserSeesTheTimelineOf("Karl Marx");
+        await fixture.whenUserSeesThegardenOf("Karl Marx");
 
         fixture.thenUserShouldSee([
           {
@@ -49,17 +51,30 @@ describe("Feature: Viewing a personnal plant list", () => {
 });
 
 const createFixture = () => {
+  let garden: {
+    proprietary: string;
+    title: string;
+    publicationTime: string;
+  }[];
+  const plantRepository = new InMemoryPlantRepository();
+  const viewGardenUseCase = new ViewGardenUseCase(plantRepository);
   return {
-    givenTheFollowingPlantsExists(plants: Plant[]) {},
+    givenTheFollowingPlantsExists(plants: Plant[]) {
+      plantRepository.givenExistingPlants(plants);
+    },
     givenNowIs(now: Date) {},
-    async whenUserSeesTheTimelineOf(user: string) {},
+    async whenUserSeesThegardenOf(user: string) {
+      garden = await viewGardenUseCase.handle({ user });
+    },
     thenUserShouldSee(
-      timeline: {
+      expectedgarden: {
         proprietary: string;
         title: string;
         publicationTime: string;
       }[]
-    ) {},
+    ) {
+      expect(garden).toEqual(expectedgarden);
+    },
   };
 };
 

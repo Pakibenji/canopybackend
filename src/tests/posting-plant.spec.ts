@@ -1,11 +1,11 @@
 import {
-  Plant,
   PostPlantUseCase,
   PostPlantCommand,
   DateProvider,
   TitleTooLongError,
   EmptyTitleError,
 } from "../post-plant.usecase";
+import { Plant } from "../Plant";
 import { InMemoryPlantRepository } from "../plant.inmemory.repository";
 describe("Feature: Posting a plant", () => {
   let fixture: Fixture;
@@ -88,7 +88,9 @@ const createFixture = () => {
       }
     },
     thenPostedPlantShouldBe(expectedPlant: Plant) {
-      expect(expectedPlant).toEqual(plantRepository.plant);
+      expect(expectedPlant).toEqual(
+        plantRepository.getPlantById(expectedPlant.id)
+      );
     },
     thenErrorShouldBe(expectedErrorClass: new () => Error) {
       expect(thrownError).toBeInstanceOf(expectedErrorClass);

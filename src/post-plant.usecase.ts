@@ -1,19 +1,10 @@
-export type Plant = {
-  id: string;
-  title: string;
-  proprietary: string;
-  publishedAt: Date;
-};
+import { PlantRepository } from "./plant.repository";
 
 export type PostPlantCommand = {
   id: string;
   title: string;
   proprietary: string;
 };
-
-export interface PlantRepository {
-  save(plant: Plant): void;
-}
 
 export interface DateProvider {
   getNow(): Date;

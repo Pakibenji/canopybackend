@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "test": "jest",
     "build": "tsc --noEmit ./index.ts && esbuild index.ts --bundle --platform=node --format=cjs --outfile=dist/index.js"
   },
   "bin": {
