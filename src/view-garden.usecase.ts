@@ -9,7 +9,9 @@ export class ViewGardenUseCase {
       publicationTime: string;
     }[]
   > {
-    const plantsOfUser = await this.plantRepository.getAllOfUser(user);
+    const plantsOfUser = (await this.plantRepository.getAllOfUser(user)).sort(
+      (a, b) => b.publishedAt.getTime() - a.publishedAt.getTime()
+    );
     return [
       {
         proprietary: plantsOfUser[0].proprietary,
