@@ -7,6 +7,7 @@ import {
 } from "../post-plant.usecase";
 import { Plant } from "../Plant";
 import { InMemoryPlantRepository } from "../plant.inmemory.repository";
+import { StubDateProvider } from "../stub-date-provider";
 describe("Feature: Posting a plant", () => {
   let fixture: Fixture;
 
@@ -63,13 +64,6 @@ describe("Feature: Posting a plant", () => {
     });
   });
 });
-
-class StubDateProvider implements DateProvider {
-  now: Date;
-  getNow(): Date {
-    return this.now;
-  }
-}
 
 const createFixture = () => {
   const plantRepository = new InMemoryPlantRepository();
